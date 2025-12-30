@@ -8,7 +8,7 @@ import { fragmentShader } from "./components/ShaderCanvas"
 const Home = () => {
     return (
         <>
-        <TextIntro text='I explore the interplay of creativity, art, and technology in research and education.'/>
+        <TextIntro text='In my work, I explore the interplay of creativity, art, and technology in research and education.'/>
         
         <HeroCanvas>
             <ShaderCanvas
