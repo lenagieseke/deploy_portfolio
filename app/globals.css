@@ -1,0 +1,243 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Global CSS variables */
+:root {
+    --font-headers: var(--font-soehne);
+    --font-body: var(--font-soehne);
+}
+
+html {
+    scrollbar-gutter: stable;
+}
+
+/*
+ * Smooth scrolling when an element inside <html> is focused
+ * Helpful for anchor links and skip-links
+ */
+html:focus-within {
+    scroll-behavior: smooth;
+}
+
+/*
+ * Global body styles
+ * - OpenType features for nicer typography where available
+ */
+body {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-feature-settings:
+        'rlig' 1,
+        'calt' 1;
+    background-color: white;
+}
+
+
+/* 
+Tailwind’s default breakpoints (the important part)
+* sm → min-width 640px (small screens)
+* md → min-width 768px (medium-sized screens)
+* lg → min-width 1024px (large screens)
+* xl → min-width 1280px
+*/
+
+
+/* Base styles that extend Tailwind’s base layer */
+@layer base {
+    canvas {
+        touch-action: none;
+    }
+
+    h1,
+    h2,
+    h3 {
+        font-family: var(--font-headers);
+        font-weight: 800;
+
+        /* Browsers break the word wherever necessary  */
+        overflow-wrap: anywhere;
+    }
+
+    /* 
+    * H1: fluid type using clamp()
+    * - interpolated based on the viewport width (5vw + 1rem)
+    * - 2rem at very small viewports
+    * - capped at 8rem on very large screens
+    * Tailwind handles line-height via @apply
+    */
+    h1 {
+        @apply leading-none;
+        font-size: clamp(1rem, 8vw + 0.3rem, 10rem);
+    }
+
+    h2 {
+        @apply text-3xl sm:text-4xl lg:text-6xl leading-tight;
+    }
+
+    h3 {
+        @apply text-xl sm:text-2xl lg:text-4xl leading-tight;
+    }
+
+    /*
+     * Section default spacing
+     * Gives every <section> a consistent horizontal and vertical padding
+     */
+    section {
+        @apply p-3 sm:p-6 lg:p-12;
+    }
+
+    /*NOTE: The following is probably too specific
+    for a global style - should be simplified
+    with the specifics going to specific elements */
+     p {
+        /* leading-relaxed: line-height of roughly 1.625 */
+        /* leading-loose: line-height of roughly 2. */
+        @apply text-base leading-relaxed text-left sm:text-lg lg:text-xl lg:leading-loose;
+
+        /* Max line length for readability */
+        max-width: 66ch;
+
+        /* Allow hyphenation to reduce gaps when justified */
+        hyphens: auto;
+    }
+        /*
+     * Intro paragraph style
+     * - Tighter leading for a compact hero-like block
+     * - Max width to avoid super-long lines
+     * - Left aligned, but text balanced for nicer wrapping
+     */
+    p.intro {
+        @apply leading-tight text-left text-balance;
+    }
+
+    /*  For small screens switch to
+        stacking the tables in the accordion
+        on the about page. 
+
+        By forcing all table elements to display: block, 
+        everything becomes plain block boxes that stack vertically.
+
+        The rest styles the resulting “pile of blocks”.
+    */
+    @media (max-width: 768px) {
+        .about-table table,
+        .about-table thead,
+        .about-table tbody,
+        .about-table th,
+        .about-table td,
+        .about-table tr {
+            display: block;
+            width: 100%;
+        }
+
+        .about-table thead {
+            display: none;
+        }
+
+        .about-table tr {
+            margin-bottom: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            background-color: #ffffff;
+        }
+
+        .about-table td {
+            padding: 0.1rem 0;
+            line-height: 1.2;
+        }
+
+        .about-table td:first-child {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+    }
+
+}
+
+
+
+
+@layer components {
+    
+    /* BUTTONS */
+    /* Generic button style used across the site */
+    .btn {
+        @apply inline-flex items-center gap-2 border px-3 py-1
+            text-sm text-gray-800 
+            hover:bg-gray-50 hover:text-gray-400
+            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 cursor-pointer;
+        }
+
+    /* Visibility helper: button only on mobile */
+    .btn-mobile {
+        @apply md:hidden;
+    }
+
+    /* NAVIGATION */
+    /* Desktop navigation (inline links, 
+    shown from medium-sized screens and anything larger) */
+    .main-nav {
+        @apply hidden md:flex items-center gap-6;
+    }
+
+    .main-nav-link {
+        @apply text-sm font-medium text-gray-800 hover:text-gray-400;
+    }
+
+    /* Mobile dropdown panel (only used when menu is open) */
+    .menu-panel {
+        @apply absolute right-0 mt-2 w-48 border bg-white shadow-lg
+        md:hidden;
+    }
+
+    .menu-panel-list {
+        @apply py-1;
+    }
+
+    .menu-panel-link {
+        @apply block px-3 py-2 text-sm text-gray-800
+        hover:bg-gray-50 hover:text-gray-400;
+    }
+
+    /* HEADER & FOOTER */
+    /* Shared responsive padding for header + footer */
+    .site-header,
+    .site-footer {
+        @apply px-4 py-2;
+    }
+
+    /* Uses serif font and tighter letter spacing */
+    .site-header-name {
+        font-family: var(--font-headers);
+        font-weight: 800;
+        @apply tracking-tight text-lg sm:text-xl lg:text-2xl;
+    }
+
+    .site-header {
+        /* mobile: compact sticky top bar */
+        @apply sticky top-0 z-50 flex items-center justify-between bg-white/80 backdrop-blur;
+    }
+
+    .site-footer {
+        @apply border-gray-300 bg-white;
+    }
+
+    .site-footer p {
+        @apply  text-gray-600 text-sm;
+    }
+
+    .footer-content {
+        @apply flex flex-col gap-1 pl-4
+            sm:flex-row sm:justify-between sm:items-center;
+    }
+
+
+    /* CONTENT */
+    .content-center {
+        @apply flex items-center justify-center w-full pt-3 sm:pt-6 lg:pt-10;;
+    }
+}
+
+
